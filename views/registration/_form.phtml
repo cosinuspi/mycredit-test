@@ -1,0 +1,54 @@
+<form id="registration-form" action="" method="post">
+    <input type="hidden" name="<?= $csrf_name ?>" value="<?= $csrf_token ?>">
+    <?php if (isset($errors[$csrf_name])) : ?>
+    <div><?= $errors[$csrf_name] ?></div>
+    <?php endif; ?>
+    <div class="field-wrapper" id="name-wrapper">
+        <label for="name">ФИО</label>
+        <input type="text" name="name" id="name" value="<?= $name ?>">
+        <div class="errors">
+            <?php if (isset($errors['name'])) : ?>
+            <?php foreach ($errors['name'] as $error) : ?>
+            <span><?= $error ?></span>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="field-wrapper" id="email-wrapper">
+        <label for="email">EMAIL</label>
+        <input type="email" name="email" id="email" value="<?= $email ?>">
+        <div class="errors">
+            <?php if (isset($errors['email'])) : ?>
+            <?php foreach ($errors['email'] as $error) : ?>
+            <span><?= $error ?></span>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="field-wrapper" id="area-wrapper">
+        <select name="area_id" id="areas" class="chosen-select " data-action="<?= $cities_action ?>" data-target="#cities-wrapper">
+            <option value="">Список областей</option>
+            <?php foreach ($areas as $area) : ?>
+            <option value="<?= $area['ter_id'] ?>"<?= $area['ter_id'] == $area_id ? ' selected' : '' ?>><?= $area['ter_name'] ?></option>
+            <?php endforeach; ?>
+        </select>
+        <div class="errors">
+            <?php if (isset($errors['area_id'])) : ?>
+            <?php foreach ($errors['area_id'] as $error) : ?>
+            <span><?= $error ?></span>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <div class="field-wrapper" id="cities-wrapper">
+        <?php if (isset($cities)) : ?>
+        <?= $cities ?>
+        <?php endif; ?>
+    </div>
+    <div class="field-wrapper" id="city-district-wrapper">
+        <?php if (isset($city_districts)) : ?>
+        <?= $city_districts ?>
+        <?php endif; ?>
+    </div>
+    <input type="submit">
+</form>
