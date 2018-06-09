@@ -25,11 +25,11 @@
             <?php endif; ?>
         </div>
     </div>
-    <div class="field-wrapper" id="area-wrapper">
+    <div class="field-wrapper select-wrapper" id="area-wrapper">
         <select name="area_id" id="areas" class="chosen-select " data-action="<?= $cities_action ?>" data-target="#cities-wrapper">
             <option value="">Список областей</option>
             <?php foreach ($areas as $area) : ?>
-            <option value="<?= $area['ter_id'] ?>"<?= $area['ter_id'] == $area_id ? ' selected' : '' ?>><?= $area['ter_name'] ?></option>
+            <option value="<?= $area['ter_id'] ?>"<?= $area['ter_id'] == $area_id ? ' selected' : '' ?><?= $area['special'] ? ' data-action="' . $city_districts_action . '" data-target="#city-districts-wrapper" data-param="city_id"' : '' ?>><?= $area['ter_name'] ?></option>
             <?php endforeach; ?>
         </select>
         <div class="errors">
@@ -40,12 +40,12 @@
             <?php endif; ?>
         </div>
     </div>
-    <div class="field-wrapper" id="cities-wrapper">
+    <div class="field-wrapper select-wrapper" id="cities-wrapper">
         <?php if (isset($cities)) : ?>
         <?= $cities ?>
         <?php endif; ?>
     </div>
-    <div class="field-wrapper" id="city-district-wrapper">
+    <div class="field-wrapper select-wrapper" id="city-districts-wrapper">
         <?php if (isset($city_districts)) : ?>
         <?= $city_districts ?>
         <?php endif; ?>

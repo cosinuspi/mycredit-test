@@ -20,9 +20,10 @@ class User extends Controller
             $this->app->response->redirect('index.php?route=error');
         }
         
-        $data['city'] = $data['user']->city;
-        $data['area'] = Koatuu::getParent($data['city']);
         $data['title'] = $data['user']->name;
+        $data['area'] = $data['user']->area;
+        $data['city'] = $data['user']->city;
+        $data['cityDistrict'] = $data['user']->cityDistrict;
         
         $this->app->response->setOutput($this->html('view', $data));
     }

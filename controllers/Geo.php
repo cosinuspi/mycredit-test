@@ -22,7 +22,7 @@ class Geo extends Controller
         $html_data['name'] = 'city_id';
         $html_data['id'] = 'cities';
         $html_data['action'] = 'index.php?route=geo/cityDistricts';
-        $html_data['target'] = '#city-district-wrapper';
+        $html_data['target'] = '#city-districts-wrapper';
         $html_data['label'] = 'Список городов';
         $html_data['options'] = Koatuu::getCities($area_id);
         $html_data['field_id'] = '';

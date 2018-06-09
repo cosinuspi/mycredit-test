@@ -25,6 +25,11 @@ class User extends Model
     /**
      * @var string
      */
+    protected $area_id;
+    
+    /**
+     * @var string
+     */
     protected $city_id;
     
     /**
@@ -40,6 +45,7 @@ class User extends Model
     protected $fields = [
         'name' => 'string',
         'email' => 'string',
+        'area_id' => 'string',
         'city_id' => 'string',
         'city_district_id' => 'string'
     ];
@@ -63,7 +69,7 @@ class User extends Model
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
@@ -79,9 +85,25 @@ class User extends Model
     /**
      * @param string $email
      */
-    public function setEmail($email)
+    public function setEmail(string $email)
     {
         $this->email = $email;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getAreaId()
+    {
+        return $this->area_id;
+    }
+    
+    /**
+     * @param string $area_id
+     */
+    public function setAreaId(string $area_id)
+    {
+        $this->area_id = $area_id;
     }
     
     /**
@@ -95,7 +117,7 @@ class User extends Model
     /**
      * @param string $city_id
      */
-    public function setCityId($city_id)
+    public function setCityId(string $city_id)
     {
         $this->city_id = $city_id;
     }
@@ -111,7 +133,7 @@ class User extends Model
     /**
      * @param string $city_district_id
      */
-    public function setCityDistrictId($city_district_id)
+    public function setCityDistrictId(string $city_district_id)
     {
         $this->city_district_id = $city_district_id;
     }
@@ -121,7 +143,7 @@ class User extends Model
      */
     public function getArea()
     {
-        return Koatuu::findOne(['ter_id' => $this->city->ter_pid]);
+        return Koatuu::findOne(['ter_id' => $this->area_id]);
     }
     
     /**

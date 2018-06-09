@@ -1,7 +1,9 @@
 ФИО: <?= $user->name ?><br>
 EMAIL: <?= $user->email ?><br>
 Область: <?= $area->ter_name ?><br>
-Город: <?= $user->city->ter_name ?><br>
-<?php if ($user->cityDistrict) : ?>
-Район: <?= $user->cityDistrict->ter_name ?>
+<?php if ($city) : ?>
+Город: <?= $city->ter_name ?><br>
+<?php endif; ?>
+<?php if ($cityDistrict) : ?>
+Район: <?= $cityDistrict->ter_name ?>
 <?php endif; ?>

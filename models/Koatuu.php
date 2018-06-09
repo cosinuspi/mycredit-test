@@ -10,6 +10,11 @@ class Koatuu extends Model
     const CITY_TYPE = 1;
     const CITY_DISTRICT_TYPE = 3;
     
+    const SPECIAL_AREAS = [
+        '8000000000',
+        '8500000000'
+    ];
+    
     /**
      * @var string
      */
@@ -60,7 +65,18 @@ class Koatuu extends Model
      */
     public static function getAreas(): array
     {
-        return static::find(['ter_type_id' => self::AREA_TYPE]);
+        $areas = static::find(['ter_type_id' => self::AREA_TYPE]);
+        
+        foreach ($areas as &$area) {
+            if (static::isSpecialArea($area['ter_id'])) {
+                $area['special'] = true;
+            } else {
+                $area['special'] = false;
+            }
+        }
+        unset($area);
+        
+        return $areas;
     }
     
     /**
@@ -106,8 +122,18 @@ class Koatuu extends Model
      *
      * {@inheritdoc}
      */
-    public function save($validate = true): bool
+    public function save()
     {
-        return false;
+        return;
+    }
+    
+    /**
+     * @param int $area_id
+     *
+     * @return bool
+     */
+    public static function isSpecialArea(int $area_id): bool
+    {
+        return in_array($area_id, self::SPECIAL_AREAS);
     }
 }

@@ -25,29 +25,45 @@ class Registration extends Controller
         $form_data['area_id'] = $this->app->request->post('area_id');
         $form_data['city_id'] = $this->app->request->post('city_id');
         $form_data['city_district_id'] = $this->app->request->post('city_district_id');
+        $special_area_id = null;
+        $city_districts_action = 'index.php?route=geo/cityDistricts';
         
         if ($this->app->request->post()) {
             $this->validate($form_data);
             
             if ($this->errors) {
                 if ($form_data['area_id']) {
-                    $cities_data['name'] = 'city_id';
-                    $cities_data['id'] = 'cities';
-                    $cities_data['action'] = 'index.php?route=geo/cityDistricts';
-                    $cities_data['target'] = '#city-district-wrapper';
-                    $cities_data['label'] = 'Список городов';
-                    $cities_data['options'] = Koatuu::getCities($form_data['area_id']);
-                    $cities_data['field_id'] = $form_data['city_id'];
+                    if (Koatuu::isSpecialArea($form_data['area_id'])) {
+                        $special_area_id = $form_data['area_id'];
+                    }
                     
-                    $form_data['cities'] = $this->html_part('_select', $cities_data, 'geo');
+                    if ($special_area_id !== null) {
+                        $cities_data['name'] = 'city_id';
+                        $cities_data['id'] = 'cities';
+                        $cities_data['action'] = $city_districts_action;
+                        $cities_data['target'] = '#city-districts-wrapper';
+                        $cities_data['label'] = 'Список городов';
+                        
+                        $cities_data['options'] = Koatuu::getCities($form_data['area_id']);
+                        
+                        $cities_data['field_id'] = $form_data['city_id'];
+                        
+                        $form_data['cities'] = $this->html_part('_select', $cities_data, 'geo');
+                    }
                 }
                 
-                if ($form_data['city_id']) {
+                if ($special_area_id !== null) {
+                    $city_id = $special_area_id;
+                } else {
+                    $city_id = $form_data['city_id'];
+                }
+                
+                if ($city_id) {
                     $city_districts_data['name'] = 'city_district_id';
                     $city_districts_data['id'] = 'city_districts';
                     $city_districts_data['action'] = '';
                     $city_districts_data['label'] = 'Список районов';
-                    $city_districts_data['options'] = Koatuu::getCityDistricts($form_data['city_id']);
+                    $city_districts_data['options'] = Koatuu::getCityDistricts($city_id);
                     $city_districts_data['field_id'] = $form_data['city_district_id'];
                     
                     $form_data['city_districts'] = $this->html_part('_select', $city_districts_data, 'geo');
@@ -63,6 +79,7 @@ class Registration extends Controller
         }
         
         $form_data['cities_action'] = 'index.php?route=geo/cities';
+        $form_data['city_districts_action'] = $city_districts_action;
         $form_data['csrf_name'] = $this->app->request::CSRF_NAME;
         $form_data['csrf_token'] = $this->app->request->getCsrfToken();
         
@@ -100,14 +117,34 @@ class Registration extends Controller
             $this->app->response->redirect('index.php?route=user/view&id=' . $user->id);
         }
         
-        if ($message = Validator::required($city_id)) {
-            $this->errors['city_id'][] = 'Выберите город!!';
+        if ($message = Validator::required($area_id)) {
+            $this->errors['city_id'][] = 'Выберите область!!';
         } elseif (Koatuu::count([
-            'ter_id' => $city_id,
-            'ter_type_id' => Koatuu::CITY_TYPE
+            'ter_id' => $area_id,
+            'ter_type_id' => Koatuu::AREA_TYPE
         ]) == 0) {
-            $this->errors['city_id'][] = 'Нет такого города!';
-        } elseif (Koatuu::count([
+            $this->errors['area_id'][] = 'Нет такой области!';
+        }
+        
+        $special_area = false;
+        
+        if (Koatuu::isSpecialArea($area_id)) {
+            $city_id = $area_id;
+            $special_area = true;
+        }
+        
+        if (!$special_area) {
+            if ($message = Validator::required($city_id)) {
+                $this->errors['city_id'][] = 'Выберите город!!';
+            } elseif (Koatuu::count([
+                'ter_id' => $city_id,
+                'ter_type_id' => Koatuu::CITY_TYPE
+            ]) == 0) {
+                $this->errors['city_id'][] = 'Нет такого города!';
+            }
+        }
+        
+        if (Koatuu::count([
             'ter_pid' => $city_id,
             'ter_type_id' => Koatuu::CITY_DISTRICT_TYPE
         ]) > 0) {

@@ -32,16 +32,21 @@ $(document).ready(function() {
     // Load geo data
     $form.on('change', 'select', function() {
         var $select = $(this),
-            data = {},
-            $target = $($select.data('target')),
-            $targetSelect = $target.find('select');
+            $selectedOption = $select.find('option:selected'),
+            $wrapper = $select.parent(),
+            action = $selectedOption.data('action') || $select.data('action'),
+            target = $select.find('option:selected').data('target') || $select.data('target'),
+            $target = $(target),
+            $targetSelect = $target.find('select'),
+            paramName = $selectedOption.data('param') || $select.attr('name')
+            data = {};
         
         // Cleaning errors
-        $select.parent().find('.errors').html('');
+        $wrapper.find('.errors').html('');
         
-        data[$select.attr('name')] = $(this).val();
+        data[paramName] = $(this).val();
         
-        $.get($select.data('action'), data)
+        $.get(action, data)
             .done(function(json) {
                 if (json.status == 'error') {
                     alert(json.error);
@@ -49,7 +54,9 @@ $(document).ready(function() {
                 }
                 
                 if (json.status == 'ok') {
-                    $targetSelect.chosen('destroy');
+                    var $childrenWrappers = $wrapper.nextAll('.select-wrapper').find('select');
+                    $childrenWrappers.chosen('destroy');
+                    $childrenWrappers.remove();
                     
                     // Remove second level select if exists
                     var secondTarget = $targetSelect.data('target');

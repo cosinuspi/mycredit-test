@@ -48,7 +48,7 @@ class Controller
             }
             
             return call_user_func_array([$this, $method->getName()], []);
-        } catch (\Eror $e) {
+        } catch (\Error $e) {
             $this->app->response->redirect('error', 500);
         } catch (\Exception $e) {
             $this->app->response->redirect('error', 500);
